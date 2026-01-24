@@ -21,6 +21,8 @@ void FUN4() // Function 4
 
 int main()
 {
+    MOPTS::allline = true; // vai deixar a linha inteira da opção navegada com fundo branco e texto preto
+    
     MOPTS::MenuOption options[] = { // Declarar opções
         {"Opcao 2", FUN2}, //opcoes
         {"Opcao 3", FUN3}, //opcoes
@@ -36,4 +38,5 @@ int main()
     // Quarta parte serve para ver se ele limpa as opções depois de ser usada (cls)
     // Quinta parte serve para quando a opção for selecionada ou ficar em cima, irá ficar um fundo branco na opção e texto preto na opção (Recomendado para terminais escuros)
     // Sexta parte serve para mostrar um texto depois das opções
+
 }
