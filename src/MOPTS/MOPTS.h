@@ -2,7 +2,8 @@
 MOPTS
 >> APENAS WINDOWS <<
 
-
+    MOPTS::allline = true; // (true = a linha inteira da opção ficará com fundo branco e texto preto quando for navegada / false = apenas o texto da opção fica com fundo branco e texto preto quando for navegada)
+    
     MOPTS::MenuOption opcoes[] = {
         {"OPCAO 1", FUNCTION1}, // Opção 1
         {"OPCAO 2", FUNCTION2}, // Opção 2
@@ -33,6 +34,7 @@ MOPTS
 
 namespace MOPTS
 {
+    bool allline = true; // MUDE SE QUISER (true = fica a linha inteira branca ao navegar / false = fica so o texto inteiro com fundo branco ao navegar)
     typedef void (*MenuFunc)();
 
     struct MenuOption
@@ -81,6 +83,7 @@ namespace MOPTS
             CONSOLE_SCREEN_BUFFER_INFO info;
             GetConsoleScreenBufferInfo(hConsole, &info);
             WORD corOriginal = info.wAttributes;
+            int larguraConsole = info.dwSize.X;
 
             for (int i = 0; i < total; i++)
             {
@@ -90,6 +93,12 @@ namespace MOPTS
                         SetConsoleTextAttribute(
                             hConsole,
                             BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE);
+
+                    if (allline)
+                    {
+                        // Preenche a linha inteira
+                        std::cout << std::string(larguraConsole, ' ') << "\r";
+                    }
 
                     if (!marcador.empty())
                         std::cout << marcador;
