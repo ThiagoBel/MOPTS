@@ -1,42 +1,55 @@
 #include <iostream>
-#include "MOPTS.h"
+#include "MOPTS.h" // Biblioteca de menu interativo no console (APENAS WINDOWS)
 
-void FUN1() // Function 1
+void OPTION1()
 {
-    std::cout << "OPTION1" << std::endl;
+    std::cout << "Opcao 1 selecionada" << std::endl;
 }
-void FUN2() // Function 2
+void OPTION2()
 {
-    std::cout << "OPTION2" << std::endl;
+    std::cout << "Opcao 2 selecionada" << std::endl;
 }
-void FUN3() // Function 3
+void OPTION3()
 {
-    std::cout << "OPTION3" << std::endl;
+    std::cout << "Opcao 3 selecionada" << std::endl;
 }
-void FUN4() // Function 4
-{
-    std::cout << "OPTION4" << std::endl;
-}
-// Voce pode colocar mais funcoes se quiser
 
 int main()
 {
-    MOPTS::allline = true; // vai deixar a linha inteira da opção navegada com fundo branco e texto preto
-    
-    MOPTS::MenuOption options[] = { // Declarar opções
-        {"Opcao 2", FUN2}, //opcoes
-        {"Opcao 3", FUN3}, //opcoes
-        {"Opcao 1", FUN1}, //opcoes
-        {"Opcao 4", FUN4}  //opcoes
-        //pode colocar mais se quiser
+    // Ativa o uso de cores na opção selecionada
+    // true  = fundo branco e texto preto
+    // false = sem destaque de cor
+    MOPTS::color = true;
+
+    // Define se a linha inteira da opção ficará destacada
+    // true  = a linha inteira é colorida
+    // false = apenas o texto da opção é colorido
+
+    MOPTS::all_color_line = true;
+
+    // Define se o console será limpo após selecionar uma opção
+    // true  = limpa o console antes de executar a função
+    // false = mantém o menu visível
+
+    MOPTS::clear_opts = false;
+    // Lista de opções do menu
+    // Cada opção possui:
+    // - Texto que será exibido no menu
+    // - Função que será executada ao selecionar
+    MOPTS::MenuOption opcoes[] = {
+        {"Opcao 1", OPTION1}, // Executa OPTION1()
+        {"Opcao 2", OPTION2}, // Executa OPTION2()
+        {"Opcao 3", OPTION3}, // Executa OPTION3()
     };
 
-    MOPTS::ShowMenu("Descricao de cima", options, "", false, true, "Descricao de baixo"); // aparecer no console
-    // Primeira parte serve para mostrar um texto antes das opções
-    // Segunda parte serve para colocar as opções no console
-    // Terceira parte serve para mostrar o marcador, exemplo: "> OPCAO 1"
-    // Quarta parte serve para ver se ele limpa as opções depois de ser usada (cls)
-    // Quinta parte serve para quando a opção for selecionada ou ficar em cima, irá ficar um fundo branco na opção e texto preto na opção (Recomendado para terminais escuros)
-    // Sexta parte serve para mostrar um texto depois das opções
+    // Exibe o menu no console
 
+    // 1º "Descricao de cima"  -> texto exibido antes das opções
+    // 2º opcoes               -> lista de opções do menu
+    // 3º ""                   -> marcador da opção selecionada (vazio = sem marcador)
+    // 4º "Descricao de baixo" -> texto exibido após as opções
+
+    MOPTS::ShowMenu("Descricao de cima", opcoes, "", "Descricao de baixo");
+
+    return 0;
 }

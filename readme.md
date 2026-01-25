@@ -2,7 +2,7 @@
 
 **MOPTS** é uma biblioteca simples e Header-Only de C++ para criar menus interativos no console do Windows.
 
-> ⚠️ **APENAS WINDOWS** (usa `windows.h` e `conio.h`)
+> ⚠️ **APENAS WINDOWS** (pois usa `windows.h` e `conio.h`)
 
 ---
 
@@ -47,7 +47,6 @@
 
 | Compatível | Versão do Windows |
 |------------|-------------------|
-| ⚠️ Parcial | Windows 98        |
 | ✅ Sim     | Windows 2000      |
 | ✅ Sim     | Windows XP        |
 | ✅ Sim     | Windows Vista     |
