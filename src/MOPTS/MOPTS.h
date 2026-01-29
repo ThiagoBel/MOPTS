@@ -1,6 +1,6 @@
 /*
 MOPTS
->> APENAS WINDOWS <<
+WINDOWS & UNIX
 
 #include <iostream>
 #include "MOPTS.h" // biblioteca
@@ -58,35 +58,45 @@ int main()
     Não precisa dar créditos, fiz no tédio
 */
 #pragma once
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef MOPTS_H
+#define MOPTS_H
 
 #include <iostream>
-#include <conio.h>
-#include <windows.h>
 #include <string>
 
-namespace MOPTS // UAU!
+#ifdef _WIN32 // janelinha
+#include <conio.h>
+#include <windows.h>
+#else // outros
+#include <termios.h>
+#include <unistd.h>
+#endif
+
+namespace MOPTS // MOPTS::
 {
-    bool all_color_line = false; // linha inteira destacada
-    bool clear_opts = false;     // limpar console após escolher
-    bool color = false;          // fundo branco na opção selecionada
+#ifdef _WIN32
+    WORD originalColor = 0;
+#endif
+
+    bool all_color_line = false; // destaca linha inteira
+    bool clear_opts = false;     // limpa console ao selecionar
+    bool color = false;          // usa cores
 
     typedef void (*MenuFunc)(const std::string &);
 
-    struct MenuOption
+    struct MenuOption // configuracoes
     {
-        std::string texto;
-        std::string classe;
-        MenuFunc func;
+        std::string texto; // texto (literal)
+        std::string classe; // classes para funcoes
+        MenuFunc func; // funcoes
     };
 
-    inline void ClearConsole() // limpa o bagulho
+    inline void ClearConsole() // UAU!
     {
+#ifdef _WIN32
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         CONSOLE_SCREEN_BUFFER_INFO csbi;
-        DWORD count;
-        DWORD cellCount;
+        DWORD count, cellCount;
 
         if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
             return;
@@ -96,10 +106,54 @@ namespace MOPTS // UAU!
         FillConsoleOutputCharacter(hConsole, ' ', cellCount, {0, 0}, &count);
         FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, {0, 0}, &count);
         SetConsoleCursorPosition(hConsole, {0, 0});
+#else
+        std::cout << "\033[2J\033[H";
+#endif
+    }
+
+    inline void SetHighlight()
+    {
+#ifdef _WIN32
+        SetConsoleTextAttribute(
+            GetStdHandle(STD_OUTPUT_HANDLE),
+            BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE |
+                FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+#else
+        std::cout << "\033[47m\033[30m";
+#endif
+    }
+
+    inline void ResetColor()
+    {
+#ifdef _WIN32
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), originalColor);
+#else
+        std::cout << "\033[0m";
+#endif
+    }
+
+    inline int GetKey()
+    {
+#ifdef _WIN32
+        return _getch();
+#else
+        termios oldt, newt;
+        int ch;
+
+        tcgetattr(STDIN_FILENO, &oldt);
+        newt = oldt;
+        newt.c_lflag &= ~(ICANON | ECHO);
+        tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+
+        ch = getchar();
+
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        return ch;
+#endif
     }
 
     template <size_t N>
-    inline void ShowMenu( // mostra no console as opcao q ce colocou
+    inline void ShowMenu( // mostra no terminal
         const std::string &desc,
         MenuOption (&opcoes)[N],
         const std::string &marcador,
@@ -107,36 +161,38 @@ namespace MOPTS // UAU!
     {
         int selecionado = 0;
         const int total = static_cast<int>(N);
+#ifdef _WIN32
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO info;
+        GetConsoleScreenBufferInfo(hConsole, &info);
+        originalColor = info.wAttributes;
+#endif
 
-        while (true) // wow!
+        while (true)
         {
-            ClearConsole();
+            ClearConsole(); // uau
 
             if (!desc.empty())
-                std::cout << desc << std::endl;
+                std::cout << desc << '\n';
 
+#ifdef _WIN32
             HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
             CONSOLE_SCREEN_BUFFER_INFO info;
             GetConsoleScreenBufferInfo(hConsole, &info);
-
-            WORD corOriginal = info.wAttributes;
-            int larguraConsole = info.dwSize.X;
+            int largura = info.dwSize.X;
+#else
+            int largura = 80; // geralmente é 80, sei n, se quiser pode mudar isso
+#endif
 
             for (int i = 0; i < total; i++)
             {
                 bool ativo = (i == selecionado);
 
                 if (ativo && color)
-                {
-                    SetConsoleTextAttribute(
-                        hConsole,
-                        BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE); // eita, cores
-                }
+                    SetHighlight();
 
                 if (ativo && all_color_line)
-                {
-                    std::cout << std::string(larguraConsole, ' ') << "\r";
-                }
+                    std::cout << std::string(largura, ' ') << "\r";
 
                 if (!marcador.empty())
                     std::cout << (ativo ? marcador : "  ");
@@ -144,34 +200,47 @@ namespace MOPTS // UAU!
                 std::cout << opcoes[i].texto << '\n';
 
                 if (ativo && color)
-                    SetConsoleTextAttribute(hConsole, corOriginal);
+                    ResetColor();
             }
 
             if (!desc2.empty())
-                std::cout << desc2 << std::endl;
+                std::cout << desc2 << '\n';
 
-            int tecla = _getch();
+            int tecla = GetKey();
 
-            if (tecla == 224)
+#ifdef _WIN32
+            if (tecla == 224) // setas
             {
-                tecla = _getch();
+                tecla = GetKey();
                 if (tecla == 72)
                     selecionado = (selecionado - 1 + total) % total;
-                else if (tecla == 80)
+                if (tecla == 80)
                     selecionado = (selecionado + 1) % total;
             }
-            else if (tecla == 'w' || tecla == 'W') // wow
+#else
+            if (tecla == 27)
             {
+                if (GetKey() == 91)
+                {
+                    int seta = GetKey();
+                    if (seta == 'A')
+                        selecionado = (selecionado - 1 + total) % total;
+                    if (seta == 'B')
+                        selecionado = (selecionado + 1) % total;
+                }
+            }
+#endif
+
+            if (tecla == 'w' || tecla == 'W') // pa cima
                 selecionado = (selecionado - 1 + total) % total;
-            }
-            else if (tecla == 's' || tecla == 'S')
-            {
+
+            if (tecla == 's' || tecla == 'S') // pa baixo
                 selecionado = (selecionado + 1) % total;
-            }
-            else if (tecla == 13 || tecla == 32)
+
+            if (tecla == 10 || tecla == 13 || tecla == 32) // sim
             {
                 if (clear_opts)
-                    ClearConsole(); // WOW
+                    ClearConsole();
 
                 if (opcoes[selecionado].func)
                     opcoes[selecionado].func(opcoes[selecionado].classe);
@@ -180,7 +249,6 @@ namespace MOPTS // UAU!
             }
         }
     }
-
 }
 
-#endif // cabou
+#endif // cabou...

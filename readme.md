@@ -1,8 +1,6 @@
 # MOPTS – Menu de Opções para Console (Windows)
 
-**MOPTS** é uma biblioteca simples e Header-Only de C++ para criar menus interativos no console do Windows.
-
-> ⚠️ **APENAS WINDOWS** (pois usa `windows.h` e `conio.h`)
+**MOPTS** é uma biblioteca simples e Header-Only de C++ para criar menus interativos no console.
 
 > ⚠️ **NÃO** PRECISA DAR CRÉDITOS!!!
 ---
@@ -55,3 +53,14 @@
 | ✅ Sim     | Windows 8 / 8.1   |
 | ✅ Sim     | Windows 10        |
 | ✅ Sim     | Windows 11        |
+
+| Compatível | Distros do Linux |
+|------------|--------------------|
+| ✅ Sim     | Ubuntu             |
+| ✅ Sim     | Debian             |
+| ✅ Sim     | Linux Mint         |
+| ✅ Sim     | Arch Linux         |
+| ✅ Sim     | Manjaro            |
+| ✅ Sim     | Fedora             |
+| ✅ Sim     | Alpine Linux       |
+| ✅ Sim     | Kali Linux         |

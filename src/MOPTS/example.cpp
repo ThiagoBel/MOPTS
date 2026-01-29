@@ -26,13 +26,13 @@ int main()
     // Define se a linha inteira da opção ficará destacada
     // true  = a linha inteira é colorida
     // false = apenas o texto da opção é colorido
-    MOPTS::clear_opts = true;
+    MOPTS::clear_opts = false;
     // Define se o console será limpo após selecionar uma opção
     // true  = limpa o console antes de executar a função
     // false = mantém o menu visível
 
     MOPTS::MenuOption opcoes[] = {
-        // opcoes
+        // opcoes, classes e funcoes
         {"Opcao 1", "CLASS1", OPTION1},
         {"Opcao 2", "CLASS2", OPTION2},
         {"Opcao 3", "CLASS3", OPTION3},
