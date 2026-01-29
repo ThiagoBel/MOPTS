@@ -4,6 +4,7 @@
 
 > ⚠️ **APENAS WINDOWS** (pois usa `windows.h` e `conio.h`)
 
+> ⚠️ **NÃO** PRECISA DAR CRÉDITOS!!!
 ---
 
 ### Funcionalidades
