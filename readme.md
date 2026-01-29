@@ -17,16 +17,6 @@
 
 ---
 
-### Requisitos
-
-- Windows
-- Compilador C++ compatível com:
-  - `<windows.h>`
-  - `<conio.h>`
-- C++98 ou mais
-
----
-
 ### Instalação
 
 1. Copie o arquivo `MOPTS.h` para o seu projeto
