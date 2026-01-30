@@ -86,9 +86,9 @@ namespace MOPTS // MOPTS::
 
     struct MenuOption // configuracoes
     {
-        std::string texto; // texto (literal)
+        std::string texto;  // texto (literal)
         std::string classe; // classes para funcoes
-        MenuFunc func; // funcoes
+        MenuFunc func;      // funcoes
     };
 
     inline void ClearConsole() // UAU!
@@ -116,10 +116,11 @@ namespace MOPTS // MOPTS::
 #ifdef _WIN32
         SetConsoleTextAttribute(
             GetStdHandle(STD_OUTPUT_HANDLE),
-            BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE |
-                FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+            BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE // fundo branco
+            // foreground preto (0)
+        );
 #else
-        std::cout << "\033[47m\033[30m";
+        std::cout << "\033[47m\033[30m"; // fundo branco, texto preto
 #endif
     }
 
